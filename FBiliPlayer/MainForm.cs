@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
 
@@ -19,6 +20,8 @@ namespace FBiliPlayer
 		public MainForm()
 		{
 			InitializeComponent();
+			vlcControl1.Dock = DockStyle.Top;
+			trackBar1.Dock = DockStyle.Bottom;
 			OnSizeChanged(null);
 		}
 
@@ -33,7 +36,7 @@ namespace FBiliPlayer
 				return true;
 			}
 			playIndex = -1;
-			vlcControl1.Stop();
+			vlcControl1.OnStopped();
 			return false;
 		}
 
@@ -87,7 +90,7 @@ namespace FBiliPlayer
 		{
 			vlcControl1.Height = ClientSize.Height - trackBar1.Height;
 		}
-
+		
 		private void trackBar1_MouseDown(object sender,MouseEventArgs e)
 		{
 			lockTrackbar = true;
@@ -114,20 +117,26 @@ namespace FBiliPlayer
 					return;
 				}
 			}
-			throw new Exception("Video index out of range");
+			playIndex = -1;
+			vlcControl1.Stop();
 		}
 
 		private void vlcControl1_Playing(object sender,Vlc.DotNet.Core.VlcMediaPlayerPlayingEventArgs e)
 		{
 			Invoke(new Action(delegate
 			{
-				timer1.Enabled = true;
+				label1.Visible = false;
+				timer1.Enabled = trackBar1.Visible = vlcControl1.Visible = !label1.Visible;
 			}));
 		}
 
 		private void vlcControl1_Stopped(object sender,Vlc.DotNet.Core.VlcMediaPlayerStoppedEventArgs e)
 		{
-			timer1.Enabled = false;
+			Invoke(new Action(delegate
+			{
+				label1.Visible = true;
+				timer1.Enabled = trackBar1.Visible = vlcControl1.Visible = !label1.Visible;
+			}));
 		}
 
 		private void vlcControl1_PositionChanged(object sender,Vlc.DotNet.Core.VlcMediaPlayerPositionChangedEventArgs e)
