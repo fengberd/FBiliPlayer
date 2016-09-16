@@ -29,30 +29,30 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.trackBar1 = new System.Windows.Forms.TrackBar();
 			this.timer1 = new System.Windows.Forms.Timer(this.components);
 			this.vlcControl1 = new Vlc.DotNet.Forms.VlcControl();
-			this.button1 = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-			((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+			this.rightMenu_Pause = new System.Windows.Forms.ToolStripMenuItem();
+			this.rightMenu_Stop = new System.Windows.Forms.ToolStripMenuItem();
+			this.rightMenu_Fullscreen = new System.Windows.Forms.ToolStripMenuItem();
+			this.rightMenu_Video = new System.Windows.Forms.ToolStripMenuItem();
+			this.rightMenu_Video_Filters = new System.Windows.Forms.ToolStripMenuItem();
+			this.rightMenu_Video_Filters_None = new System.Windows.Forms.ToolStripMenuItem();
+			this.rightMenu_Video_Filters_Transform = new System.Windows.Forms.ToolStripMenuItem();
+			this.rightMenu_Video_Filters_Transform_90 = new System.Windows.Forms.ToolStripMenuItem();
+			this.rightMenu_Video_Filters_Transform_180 = new System.Windows.Forms.ToolStripMenuItem();
+			this.rightMenu_Video_Filters_Transform_270 = new System.Windows.Forms.ToolStripMenuItem();
+			this.rightMenu_Video_Filters_Wave = new System.Windows.Forms.ToolStripMenuItem();
+			this.rightMenu_DEV = new System.Windows.Forms.ToolStripMenuItem();
+			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			this.videobar = new System.Windows.Forms.Panel();
+			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			((System.ComponentModel.ISupportInitialize)(this.vlcControl1)).BeginInit();
 			this.contextMenuStrip1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+			this.videobar.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// trackBar1
-			// 
-			this.trackBar1.AutoSize = false;
-			this.trackBar1.Location = new System.Drawing.Point(0, 496);
-			this.trackBar1.Maximum = 0;
-			this.trackBar1.Name = "trackBar1";
-			this.trackBar1.Size = new System.Drawing.Size(834, 15);
-			this.trackBar1.TabIndex = 1;
-			this.trackBar1.TickStyle = System.Windows.Forms.TickStyle.None;
-			this.trackBar1.Visible = false;
-			this.trackBar1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.trackBar1_MouseDown);
-			this.trackBar1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.trackBar1_MouseUp);
 			// 
 			// timer1
 			// 
@@ -64,7 +64,7 @@
 			this.vlcControl1.BackColor = System.Drawing.Color.Black;
 			this.vlcControl1.Location = new System.Drawing.Point(0, 0);
 			this.vlcControl1.Name = "vlcControl1";
-			this.vlcControl1.Size = new System.Drawing.Size(834, 496);
+			this.vlcControl1.Size = new System.Drawing.Size(834, 510);
 			this.vlcControl1.Spu = -1;
 			this.vlcControl1.TabIndex = 2;
 			this.vlcControl1.Visible = false;
@@ -75,16 +75,6 @@
 			this.vlcControl1.Playing += new System.EventHandler<Vlc.DotNet.Core.VlcMediaPlayerPlayingEventArgs>(this.vlcControl1_Playing);
 			this.vlcControl1.PositionChanged += new System.EventHandler<Vlc.DotNet.Core.VlcMediaPlayerPositionChangedEventArgs>(this.vlcControl1_PositionChanged);
 			this.vlcControl1.Stopped += new System.EventHandler<Vlc.DotNet.Core.VlcMediaPlayerStoppedEventArgs>(this.vlcControl1_Stopped);
-			// 
-			// button1
-			// 
-			this.button1.Location = new System.Drawing.Point(8, 27);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(50, 23);
-			this.button1.TabIndex = 3;
-			this.button1.Text = "To 99%";
-			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Click += new System.EventHandler(this.button1_Click);
 			// 
 			// label1
 			// 
@@ -100,24 +90,144 @@
 			// contextMenuStrip1
 			// 
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem2});
+            this.rightMenu_Pause,
+            this.rightMenu_Stop,
+            this.toolStripMenuItem1,
+            this.rightMenu_Fullscreen,
+            this.rightMenu_Video,
+            this.rightMenu_DEV});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(105, 26);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(134, 120);
 			// 
-			// toolStripMenuItem2
+			// rightMenu_Pause
 			// 
-			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-			this.toolStripMenuItem2.Size = new System.Drawing.Size(104, 22);
-			this.toolStripMenuItem2.Text = "2333";
+			this.rightMenu_Pause.Name = "rightMenu_Pause";
+			this.rightMenu_Pause.Size = new System.Drawing.Size(133, 22);
+			this.rightMenu_Pause.Text = "Pause";
+			this.rightMenu_Pause.Click += new System.EventHandler(this.rightMenu_Pause_Click);
+			// 
+			// rightMenu_Stop
+			// 
+			this.rightMenu_Stop.Name = "rightMenu_Stop";
+			this.rightMenu_Stop.Size = new System.Drawing.Size(133, 22);
+			this.rightMenu_Stop.Text = "Stop";
+			this.rightMenu_Stop.Click += new System.EventHandler(this.rightMenu_Stop_Click);
+			// 
+			// rightMenu_Fullscreen
+			// 
+			this.rightMenu_Fullscreen.Name = "rightMenu_Fullscreen";
+			this.rightMenu_Fullscreen.Size = new System.Drawing.Size(133, 22);
+			this.rightMenu_Fullscreen.Text = "Fullscreen";
+			this.rightMenu_Fullscreen.Click += new System.EventHandler(this.rightMenu_Fullscreen_Click);
+			// 
+			// rightMenu_Video
+			// 
+			this.rightMenu_Video.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.rightMenu_Video_Filters});
+			this.rightMenu_Video.Name = "rightMenu_Video";
+			this.rightMenu_Video.Size = new System.Drawing.Size(133, 22);
+			this.rightMenu_Video.Text = "Video";
+			// 
+			// rightMenu_Video_Filters
+			// 
+			this.rightMenu_Video_Filters.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.rightMenu_Video_Filters_None,
+            this.rightMenu_Video_Filters_Transform,
+            this.rightMenu_Video_Filters_Wave});
+			this.rightMenu_Video_Filters.Name = "rightMenu_Video_Filters";
+			this.rightMenu_Video_Filters.Size = new System.Drawing.Size(152, 22);
+			this.rightMenu_Video_Filters.Text = "Filters";
+			// 
+			// rightMenu_Video_Filters_None
+			// 
+			this.rightMenu_Video_Filters_None.Checked = true;
+			this.rightMenu_Video_Filters_None.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.rightMenu_Video_Filters_None.Name = "rightMenu_Video_Filters_None";
+			this.rightMenu_Video_Filters_None.Size = new System.Drawing.Size(152, 22);
+			this.rightMenu_Video_Filters_None.Text = "None";
+			this.rightMenu_Video_Filters_None.Click += new System.EventHandler(this.rightMenu_Video_Filters_None_Click);
+			// 
+			// rightMenu_Video_Filters_Transform
+			// 
+			this.rightMenu_Video_Filters_Transform.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.rightMenu_Video_Filters_Transform_90,
+            this.rightMenu_Video_Filters_Transform_180,
+            this.rightMenu_Video_Filters_Transform_270});
+			this.rightMenu_Video_Filters_Transform.Name = "rightMenu_Video_Filters_Transform";
+			this.rightMenu_Video_Filters_Transform.Size = new System.Drawing.Size(152, 22);
+			this.rightMenu_Video_Filters_Transform.Text = "Transform";
+			// 
+			// rightMenu_Video_Filters_Transform_90
+			// 
+			this.rightMenu_Video_Filters_Transform_90.Name = "rightMenu_Video_Filters_Transform_90";
+			this.rightMenu_Video_Filters_Transform_90.Size = new System.Drawing.Size(97, 22);
+			this.rightMenu_Video_Filters_Transform_90.Text = "90";
+			this.rightMenu_Video_Filters_Transform_90.Click += new System.EventHandler(this.rightMenu_Video_Filters_Transform_90_Click);
+			// 
+			// rightMenu_Video_Filters_Transform_180
+			// 
+			this.rightMenu_Video_Filters_Transform_180.Name = "rightMenu_Video_Filters_Transform_180";
+			this.rightMenu_Video_Filters_Transform_180.Size = new System.Drawing.Size(97, 22);
+			this.rightMenu_Video_Filters_Transform_180.Text = "180";
+			this.rightMenu_Video_Filters_Transform_180.Click += new System.EventHandler(this.rightMenu_Video_Filters_Transform_180_Click);
+			// 
+			// rightMenu_Video_Filters_Transform_270
+			// 
+			this.rightMenu_Video_Filters_Transform_270.Name = "rightMenu_Video_Filters_Transform_270";
+			this.rightMenu_Video_Filters_Transform_270.Size = new System.Drawing.Size(97, 22);
+			this.rightMenu_Video_Filters_Transform_270.Text = "270";
+			this.rightMenu_Video_Filters_Transform_270.Click += new System.EventHandler(this.rightMenu_Video_Filters_Transform_270_Click);
+			// 
+			// rightMenu_Video_Filters_Wave
+			// 
+			this.rightMenu_Video_Filters_Wave.Name = "rightMenu_Video_Filters_Wave";
+			this.rightMenu_Video_Filters_Wave.Size = new System.Drawing.Size(152, 22);
+			this.rightMenu_Video_Filters_Wave.Text = "Wave";
+			this.rightMenu_Video_Filters_Wave.Click += new System.EventHandler(this.rightMenu_Video_Filters_Wave_Click);
+			// 
+			// rightMenu_DEV
+			// 
+			this.rightMenu_DEV.Name = "rightMenu_DEV";
+			this.rightMenu_DEV.Size = new System.Drawing.Size(133, 22);
+			this.rightMenu_DEV.Text = "DEV";
+			this.rightMenu_DEV.Click += new System.EventHandler(this.rightMenu_DEV_Click);
+			// 
+			// pictureBox1
+			// 
+			this.pictureBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(181)))), ((int)(((byte)(255)))));
+			this.pictureBox1.Location = new System.Drawing.Point(0, 0);
+			this.pictureBox1.Name = "pictureBox1";
+			this.pictureBox1.Size = new System.Drawing.Size(834, 2);
+			this.pictureBox1.TabIndex = 5;
+			this.pictureBox1.TabStop = false;
+			this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.videobar_MouseDown);
+			this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.videobar_MouseMove);
+			this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.videobar_MouseUp);
+			// 
+			// videobar
+			// 
+			this.videobar.BackColor = System.Drawing.Color.Black;
+			this.videobar.Controls.Add(this.pictureBox1);
+			this.videobar.Location = new System.Drawing.Point(0, 510);
+			this.videobar.Name = "videobar";
+			this.videobar.Size = new System.Drawing.Size(834, 2);
+			this.videobar.TabIndex = 6;
+			this.videobar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.videobar_MouseDown);
+			this.videobar.MouseMove += new System.Windows.Forms.MouseEventHandler(this.videobar_MouseMove);
+			this.videobar.MouseUp += new System.Windows.Forms.MouseEventHandler(this.videobar_MouseUp);
+			// 
+			// toolStripMenuItem1
+			// 
+			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(130, 6);
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(834, 511);
-			this.Controls.Add(this.button1);
+			this.Controls.Add(this.videobar);
 			this.Controls.Add(this.vlcControl1);
-			this.Controls.Add(this.trackBar1);
 			this.Controls.Add(this.label1);
 			this.Name = "MainForm";
 			this.ShowIcon = false;
@@ -125,21 +235,34 @@
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
 			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.SizeChanged += new System.EventHandler(this.MainForm_SizeChanged);
-			((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.vlcControl1)).EndInit();
 			this.contextMenuStrip1.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+			this.videobar.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
 
 		#endregion
-		private System.Windows.Forms.TrackBar trackBar1;
 		private System.Windows.Forms.Timer timer1;
 		private Vlc.DotNet.Forms.VlcControl vlcControl1;
-		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
+		private System.Windows.Forms.ToolStripMenuItem rightMenu_Pause;
+		private System.Windows.Forms.ToolStripMenuItem rightMenu_Stop;
+		private System.Windows.Forms.ToolStripMenuItem rightMenu_Fullscreen;
+		private System.Windows.Forms.ToolStripMenuItem rightMenu_DEV;
+		private System.Windows.Forms.PictureBox pictureBox1;
+		private System.Windows.Forms.Panel videobar;
+		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video;
+		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video_Filters;
+		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video_Filters_None;
+		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video_Filters_Transform;
+		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video_Filters_Transform_90;
+		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video_Filters_Transform_180;
+		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video_Filters_Transform_270;
+		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video_Filters_Wave;
+		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
 	}
 }
 
