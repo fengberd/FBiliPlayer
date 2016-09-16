@@ -1,18 +1,18 @@
 ﻿using System;
 using System.IO;
-using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
 
 using fastJSON;
+using System.Drawing;
 
 namespace FBiliPlayer
 {
 	public partial class MainForm : Form
 	{
-		private int playIndex = -1;
-		private bool lockTrackbar = false;
-		private long max_length = 0, current_offset = 0, current_length = 0;
+		private int playIndex = -1, old_width = 0, old_height = 0;
+		private bool lockTrackbar = false, isFullscreen = false;
+		private long max_length = 0, current_offset = 0, current_length = 0, doubleClick = -1;
 
 		private IList<string> playList = new List<string>();
 		private IDictionary<int,long[]> segment_table = new Dictionary<int,long[]>();
@@ -20,8 +20,6 @@ namespace FBiliPlayer
 		public MainForm()
 		{
 			InitializeComponent();
-			vlcControl1.Dock = DockStyle.Top;
-			trackBar1.Dock = DockStyle.Bottom;
 			OnSizeChanged(null);
 		}
 
@@ -73,6 +71,28 @@ namespace FBiliPlayer
 			PlayNext();
 		}
 
+		private void Fullscreen()
+		{
+			isFullscreen = !isFullscreen;
+			OnSizeChanged(null);
+			if(isFullscreen)
+			{
+				TopMost = true;
+				old_width = Width;
+				old_height = Height;
+				FormBorderStyle = FormBorderStyle.None;
+				WindowState = FormWindowState.Maximized;
+			}
+			else if(!isFullscreen)
+			{
+				TopMost = false;
+				WindowState = FormWindowState.Normal;
+				FormBorderStyle = FormBorderStyle.Sizable;
+				Height = old_height;
+				Width = old_width;
+			}
+		}
+
 		private void timer1_Tick(object sender,EventArgs e)
 		{
 			if(vlcControl1.State == Vlc.DotNet.Core.Interops.Signatures.MediaStates.Ended && playIndex != -1)
@@ -86,11 +106,19 @@ namespace FBiliPlayer
 			PlayByIndexFolder(@"R:\30216\lua.mp4.bapi.9");
 		}
 
+		private void MainForm_FormClosing(object sender,FormClosingEventArgs e)
+		{
+			playIndex = -1;
+			playList.Clear();
+			vlcControl1.Stop();
+		}
+
 		private void MainForm_SizeChanged(object sender,EventArgs e)
 		{
-			vlcControl1.Height = ClientSize.Height - trackBar1.Height;
+			trackBar1.Top = vlcControl1.Height = ClientSize.Height - trackBar1.Height;
+			vlcControl1.Width = trackBar1.Width = ClientSize.Width;
 		}
-		
+
 		private void trackBar1_MouseDown(object sender,MouseEventArgs e)
 		{
 			lockTrackbar = true;
@@ -123,17 +151,49 @@ namespace FBiliPlayer
 
 		private void vlcControl1_Playing(object sender,Vlc.DotNet.Core.VlcMediaPlayerPlayingEventArgs e)
 		{
+			if(IsDisposed)
+			{
+				return;
+			}
 			Invoke(new Action(delegate
 			{
+				if(IsDisposed)
+				{
+					return;
+				}
 				label1.Visible = false;
 				timer1.Enabled = trackBar1.Visible = vlcControl1.Visible = !label1.Visible;
 			}));
 		}
 
-		private void vlcControl1_Stopped(object sender,Vlc.DotNet.Core.VlcMediaPlayerStoppedEventArgs e)
+		private void vlcControl1_Paused(object sender,Vlc.DotNet.Core.VlcMediaPlayerPausedEventArgs e)
 		{
+			if(IsDisposed)
+			{
+				return;
+			}
 			Invoke(new Action(delegate
 			{
+				if(IsDisposed)
+				{
+					return;
+				}
+				timer1.Enabled = false;
+			}));
+		}
+
+		private void vlcControl1_Stopped(object sender,Vlc.DotNet.Core.VlcMediaPlayerStoppedEventArgs e)
+		{
+			if(IsDisposed)
+			{
+				return;
+			}
+			Invoke(new Action(delegate
+			{
+				if(IsDisposed)
+				{
+					return;
+				}
 				label1.Visible = true;
 				timer1.Enabled = trackBar1.Visible = vlcControl1.Visible = !label1.Visible;
 			}));
@@ -141,10 +201,18 @@ namespace FBiliPlayer
 
 		private void vlcControl1_PositionChanged(object sender,Vlc.DotNet.Core.VlcMediaPlayerPositionChangedEventArgs e)
 		{
+			if(IsDisposed)
+			{
+				return;
+			}
 			if(!lockTrackbar)
 			{
 				Invoke(new Action(delegate
 				{
+					if(IsDisposed)
+					{
+						return;
+					}
 					trackBar1.Value = Math.Min(trackBar1.Maximum,(int)(current_offset + vlcControl1.Position * current_length));
 				}));
 			}
@@ -168,6 +236,62 @@ namespace FBiliPlayer
 					Environment.Exit(-1);
 				}
 			}
+		}
+
+		protected override void WndProc(ref Message m)
+		{
+			if(m.Msg == WindowsMessages.WM_PARENTNOTIFY)
+			{
+				Point point = new Point(m.LParam.ToInt32());
+				switch(m.WParam.ToInt32())
+				{
+				case 513: // Left
+					if(contextMenuStrip1.Visible)
+					{
+						doubleClick = -1;
+						contextMenuStrip1.Hide();
+						return;
+					}
+
+					if(vlcControl1.DisplayRectangle.Contains(point))
+					{
+						if(playIndex != -1)
+						{
+							if(vlcControl1.IsPlaying)
+							{
+								vlcControl1.Pause();
+							}
+							else
+							{
+								vlcControl1.Play();
+							}
+						}
+						long seconds = DateTime.Now.Ticks / 1000000;
+						if(doubleClick > seconds)
+						{
+							doubleClick = -1;
+							Fullscreen();
+						}
+						else
+						{
+							doubleClick = seconds + 6;
+						}
+					}
+					else
+					{
+						doubleClick = -1;
+					}
+					break;
+				case 516: // Right
+					doubleClick = -1;
+					contextMenuStrip1.Show(this,new Point(m.LParam.ToInt32()));
+					return;
+				default:
+					doubleClick = -1;
+					break;
+				}
+			}
+			base.WndProc(ref m);
 		}
 
 		private void button1_Click(object sender,EventArgs e)

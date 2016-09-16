@@ -71,6 +71,7 @@
 			this.vlcControl1.VlcLibDirectory = null;
 			this.vlcControl1.VlcMediaplayerOptions = null;
 			this.vlcControl1.VlcLibDirectoryNeeded += new System.EventHandler<Vlc.DotNet.Forms.VlcLibDirectoryNeededEventArgs>(this.vlcControl1_VlcLibDirectoryNeeded);
+			this.vlcControl1.Paused += new System.EventHandler<Vlc.DotNet.Core.VlcMediaPlayerPausedEventArgs>(this.vlcControl1_Paused);
 			this.vlcControl1.Playing += new System.EventHandler<Vlc.DotNet.Core.VlcMediaPlayerPlayingEventArgs>(this.vlcControl1_Playing);
 			this.vlcControl1.PositionChanged += new System.EventHandler<Vlc.DotNet.Core.VlcMediaPlayerPositionChangedEventArgs>(this.vlcControl1_PositionChanged);
 			this.vlcControl1.Stopped += new System.EventHandler<Vlc.DotNet.Core.VlcMediaPlayerStoppedEventArgs>(this.vlcControl1_Stopped);
@@ -87,7 +88,6 @@
 			// 
 			// label1
 			// 
-			this.label1.ContextMenuStrip = this.contextMenuStrip1;
 			this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.label1.Font = new System.Drawing.Font("微软雅黑", 25F);
 			this.label1.Location = new System.Drawing.Point(0, 0);
@@ -115,14 +115,14 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(834, 511);
-			this.ContextMenuStrip = this.contextMenuStrip1;
-			this.Controls.Add(this.label1);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.vlcControl1);
 			this.Controls.Add(this.trackBar1);
+			this.Controls.Add(this.label1);
 			this.Name = "MainForm";
 			this.ShowIcon = false;
 			this.Text = "Bilibili Player";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
 			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.SizeChanged += new System.EventHandler(this.MainForm_SizeChanged);
 			((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
