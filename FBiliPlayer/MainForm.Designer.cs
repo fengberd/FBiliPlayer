@@ -33,21 +33,25 @@
 			this.vlcControl1 = new Vlc.DotNet.Forms.VlcControl();
 			this.label1 = new System.Windows.Forms.Label();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.rightMenu_OpenFolder = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			this.rightMenu_Pause = new System.Windows.Forms.ToolStripMenuItem();
 			this.rightMenu_Stop = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			this.rightMenu_Fullscreen = new System.Windows.Forms.ToolStripMenuItem();
 			this.rightMenu_Video = new System.Windows.Forms.ToolStripMenuItem();
-			this.rightMenu_Video_Filters = new System.Windows.Forms.ToolStripMenuItem();
-			this.rightMenu_Video_Filters_None = new System.Windows.Forms.ToolStripMenuItem();
-			this.rightMenu_Video_Filters_Transform = new System.Windows.Forms.ToolStripMenuItem();
-			this.rightMenu_Video_Filters_Transform_90 = new System.Windows.Forms.ToolStripMenuItem();
-			this.rightMenu_Video_Filters_Transform_180 = new System.Windows.Forms.ToolStripMenuItem();
-			this.rightMenu_Video_Filters_Transform_270 = new System.Windows.Forms.ToolStripMenuItem();
-			this.rightMenu_Video_Filters_Wave = new System.Windows.Forms.ToolStripMenuItem();
+			this.rightMenu_Video_Speed = new System.Windows.Forms.ToolStripMenuItem();
+			this.rightMenu_Video_Speed_02 = new System.Windows.Forms.ToolStripMenuItem();
+			this.rightMenu_Video_Speed_05 = new System.Windows.Forms.ToolStripMenuItem();
+			this.rightMenu_Video_Speed_08 = new System.Windows.Forms.ToolStripMenuItem();
+			this.rightMenu_Video_Speed_10 = new System.Windows.Forms.ToolStripMenuItem();
+			this.rightMenu_Video_Speed_15 = new System.Windows.Forms.ToolStripMenuItem();
+			this.rightMenu_Video_Speed_20 = new System.Windows.Forms.ToolStripMenuItem();
+			this.rightMenu_Video_Speed_50 = new System.Windows.Forms.ToolStripMenuItem();
+			this.rightMenu_Video_Tracks = new System.Windows.Forms.ToolStripMenuItem();
 			this.rightMenu_DEV = new System.Windows.Forms.ToolStripMenuItem();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.videobar = new System.Windows.Forms.Panel();
-			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			((System.ComponentModel.ISupportInitialize)(this.vlcControl1)).BeginInit();
 			this.contextMenuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -90,6 +94,8 @@
 			// contextMenuStrip1
 			// 
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.rightMenu_OpenFolder,
+            this.toolStripMenuItem2,
             this.rightMenu_Pause,
             this.rightMenu_Stop,
             this.toolStripMenuItem1,
@@ -97,98 +103,135 @@
             this.rightMenu_Video,
             this.rightMenu_DEV});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(134, 120);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(150, 148);
+			// 
+			// rightMenu_OpenFolder
+			// 
+			this.rightMenu_OpenFolder.Name = "rightMenu_OpenFolder";
+			this.rightMenu_OpenFolder.Size = new System.Drawing.Size(149, 22);
+			this.rightMenu_OpenFolder.Text = "Open Folder";
+			this.rightMenu_OpenFolder.Click += new System.EventHandler(this.rightMenu_OpenFolder_Click);
+			// 
+			// toolStripMenuItem2
+			// 
+			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(146, 6);
 			// 
 			// rightMenu_Pause
 			// 
 			this.rightMenu_Pause.Name = "rightMenu_Pause";
-			this.rightMenu_Pause.Size = new System.Drawing.Size(133, 22);
+			this.rightMenu_Pause.Size = new System.Drawing.Size(149, 22);
 			this.rightMenu_Pause.Text = "Pause";
 			this.rightMenu_Pause.Click += new System.EventHandler(this.rightMenu_Pause_Click);
 			// 
 			// rightMenu_Stop
 			// 
 			this.rightMenu_Stop.Name = "rightMenu_Stop";
-			this.rightMenu_Stop.Size = new System.Drawing.Size(133, 22);
+			this.rightMenu_Stop.Size = new System.Drawing.Size(149, 22);
 			this.rightMenu_Stop.Text = "Stop";
 			this.rightMenu_Stop.Click += new System.EventHandler(this.rightMenu_Stop_Click);
+			// 
+			// toolStripMenuItem1
+			// 
+			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(146, 6);
 			// 
 			// rightMenu_Fullscreen
 			// 
 			this.rightMenu_Fullscreen.Name = "rightMenu_Fullscreen";
-			this.rightMenu_Fullscreen.Size = new System.Drawing.Size(133, 22);
+			this.rightMenu_Fullscreen.Size = new System.Drawing.Size(149, 22);
 			this.rightMenu_Fullscreen.Text = "Fullscreen";
 			this.rightMenu_Fullscreen.Click += new System.EventHandler(this.rightMenu_Fullscreen_Click);
 			// 
 			// rightMenu_Video
 			// 
 			this.rightMenu_Video.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.rightMenu_Video_Filters});
+            this.rightMenu_Video_Speed,
+            this.rightMenu_Video_Tracks});
 			this.rightMenu_Video.Name = "rightMenu_Video";
-			this.rightMenu_Video.Size = new System.Drawing.Size(133, 22);
+			this.rightMenu_Video.Size = new System.Drawing.Size(149, 22);
 			this.rightMenu_Video.Text = "Video";
 			// 
-			// rightMenu_Video_Filters
+			// rightMenu_Video_Speed
 			// 
-			this.rightMenu_Video_Filters.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.rightMenu_Video_Filters_None,
-            this.rightMenu_Video_Filters_Transform,
-            this.rightMenu_Video_Filters_Wave});
-			this.rightMenu_Video_Filters.Name = "rightMenu_Video_Filters";
-			this.rightMenu_Video_Filters.Size = new System.Drawing.Size(152, 22);
-			this.rightMenu_Video_Filters.Text = "Filters";
+			this.rightMenu_Video_Speed.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.rightMenu_Video_Speed_02,
+            this.rightMenu_Video_Speed_05,
+            this.rightMenu_Video_Speed_08,
+            this.rightMenu_Video_Speed_10,
+            this.rightMenu_Video_Speed_15,
+            this.rightMenu_Video_Speed_20,
+            this.rightMenu_Video_Speed_50});
+			this.rightMenu_Video_Speed.Name = "rightMenu_Video_Speed";
+			this.rightMenu_Video_Speed.Size = new System.Drawing.Size(152, 22);
+			this.rightMenu_Video_Speed.Text = "Speed";
 			// 
-			// rightMenu_Video_Filters_None
+			// rightMenu_Video_Speed_02
 			// 
-			this.rightMenu_Video_Filters_None.Checked = true;
-			this.rightMenu_Video_Filters_None.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.rightMenu_Video_Filters_None.Name = "rightMenu_Video_Filters_None";
-			this.rightMenu_Video_Filters_None.Size = new System.Drawing.Size(152, 22);
-			this.rightMenu_Video_Filters_None.Text = "None";
-			this.rightMenu_Video_Filters_None.Click += new System.EventHandler(this.rightMenu_Video_Filters_None_Click);
+			this.rightMenu_Video_Speed_02.Name = "rightMenu_Video_Speed_02";
+			this.rightMenu_Video_Speed_02.Size = new System.Drawing.Size(152, 22);
+			this.rightMenu_Video_Speed_02.Tag = "0.2";
+			this.rightMenu_Video_Speed_02.Text = "x0.2";
+			this.rightMenu_Video_Speed_02.Click += new System.EventHandler(this.rightMenu_Video_Speed_Item_Click);
 			// 
-			// rightMenu_Video_Filters_Transform
+			// rightMenu_Video_Speed_05
 			// 
-			this.rightMenu_Video_Filters_Transform.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.rightMenu_Video_Filters_Transform_90,
-            this.rightMenu_Video_Filters_Transform_180,
-            this.rightMenu_Video_Filters_Transform_270});
-			this.rightMenu_Video_Filters_Transform.Name = "rightMenu_Video_Filters_Transform";
-			this.rightMenu_Video_Filters_Transform.Size = new System.Drawing.Size(152, 22);
-			this.rightMenu_Video_Filters_Transform.Text = "Transform";
+			this.rightMenu_Video_Speed_05.Name = "rightMenu_Video_Speed_05";
+			this.rightMenu_Video_Speed_05.Size = new System.Drawing.Size(152, 22);
+			this.rightMenu_Video_Speed_05.Tag = "0.5";
+			this.rightMenu_Video_Speed_05.Text = "x0.5";
+			this.rightMenu_Video_Speed_05.Click += new System.EventHandler(this.rightMenu_Video_Speed_Item_Click);
 			// 
-			// rightMenu_Video_Filters_Transform_90
+			// rightMenu_Video_Speed_08
 			// 
-			this.rightMenu_Video_Filters_Transform_90.Name = "rightMenu_Video_Filters_Transform_90";
-			this.rightMenu_Video_Filters_Transform_90.Size = new System.Drawing.Size(97, 22);
-			this.rightMenu_Video_Filters_Transform_90.Text = "90";
-			this.rightMenu_Video_Filters_Transform_90.Click += new System.EventHandler(this.rightMenu_Video_Filters_Transform_90_Click);
+			this.rightMenu_Video_Speed_08.Name = "rightMenu_Video_Speed_08";
+			this.rightMenu_Video_Speed_08.Size = new System.Drawing.Size(152, 22);
+			this.rightMenu_Video_Speed_08.Tag = "0.8";
+			this.rightMenu_Video_Speed_08.Text = "x0.8";
+			this.rightMenu_Video_Speed_08.Click += new System.EventHandler(this.rightMenu_Video_Speed_Item_Click);
 			// 
-			// rightMenu_Video_Filters_Transform_180
+			// rightMenu_Video_Speed_10
 			// 
-			this.rightMenu_Video_Filters_Transform_180.Name = "rightMenu_Video_Filters_Transform_180";
-			this.rightMenu_Video_Filters_Transform_180.Size = new System.Drawing.Size(97, 22);
-			this.rightMenu_Video_Filters_Transform_180.Text = "180";
-			this.rightMenu_Video_Filters_Transform_180.Click += new System.EventHandler(this.rightMenu_Video_Filters_Transform_180_Click);
+			this.rightMenu_Video_Speed_10.Name = "rightMenu_Video_Speed_10";
+			this.rightMenu_Video_Speed_10.Size = new System.Drawing.Size(152, 22);
+			this.rightMenu_Video_Speed_10.Tag = "1.0";
+			this.rightMenu_Video_Speed_10.Text = "x1.0";
+			this.rightMenu_Video_Speed_10.Click += new System.EventHandler(this.rightMenu_Video_Speed_Item_Click);
 			// 
-			// rightMenu_Video_Filters_Transform_270
+			// rightMenu_Video_Speed_15
 			// 
-			this.rightMenu_Video_Filters_Transform_270.Name = "rightMenu_Video_Filters_Transform_270";
-			this.rightMenu_Video_Filters_Transform_270.Size = new System.Drawing.Size(97, 22);
-			this.rightMenu_Video_Filters_Transform_270.Text = "270";
-			this.rightMenu_Video_Filters_Transform_270.Click += new System.EventHandler(this.rightMenu_Video_Filters_Transform_270_Click);
+			this.rightMenu_Video_Speed_15.Name = "rightMenu_Video_Speed_15";
+			this.rightMenu_Video_Speed_15.Size = new System.Drawing.Size(152, 22);
+			this.rightMenu_Video_Speed_15.Tag = "1.5";
+			this.rightMenu_Video_Speed_15.Text = "x1.5";
+			this.rightMenu_Video_Speed_15.Click += new System.EventHandler(this.rightMenu_Video_Speed_Item_Click);
 			// 
-			// rightMenu_Video_Filters_Wave
+			// rightMenu_Video_Speed_20
 			// 
-			this.rightMenu_Video_Filters_Wave.Name = "rightMenu_Video_Filters_Wave";
-			this.rightMenu_Video_Filters_Wave.Size = new System.Drawing.Size(152, 22);
-			this.rightMenu_Video_Filters_Wave.Text = "Wave";
-			this.rightMenu_Video_Filters_Wave.Click += new System.EventHandler(this.rightMenu_Video_Filters_Wave_Click);
+			this.rightMenu_Video_Speed_20.Name = "rightMenu_Video_Speed_20";
+			this.rightMenu_Video_Speed_20.Size = new System.Drawing.Size(152, 22);
+			this.rightMenu_Video_Speed_20.Tag = "2.0";
+			this.rightMenu_Video_Speed_20.Text = "x2.0";
+			this.rightMenu_Video_Speed_20.Click += new System.EventHandler(this.rightMenu_Video_Speed_Item_Click);
+			// 
+			// rightMenu_Video_Speed_50
+			// 
+			this.rightMenu_Video_Speed_50.Name = "rightMenu_Video_Speed_50";
+			this.rightMenu_Video_Speed_50.Size = new System.Drawing.Size(152, 22);
+			this.rightMenu_Video_Speed_50.Tag = "5.0";
+			this.rightMenu_Video_Speed_50.Text = "x5.0";
+			this.rightMenu_Video_Speed_50.Click += new System.EventHandler(this.rightMenu_Video_Speed_Item_Click);
+			// 
+			// rightMenu_Video_Tracks
+			// 
+			this.rightMenu_Video_Tracks.Name = "rightMenu_Video_Tracks";
+			this.rightMenu_Video_Tracks.Size = new System.Drawing.Size(152, 22);
+			this.rightMenu_Video_Tracks.Text = "Track";
 			// 
 			// rightMenu_DEV
 			// 
 			this.rightMenu_DEV.Name = "rightMenu_DEV";
-			this.rightMenu_DEV.Size = new System.Drawing.Size(133, 22);
+			this.rightMenu_DEV.Size = new System.Drawing.Size(149, 22);
 			this.rightMenu_DEV.Text = "DEV";
 			this.rightMenu_DEV.Click += new System.EventHandler(this.rightMenu_DEV_Click);
 			// 
@@ -216,13 +259,9 @@
 			this.videobar.MouseMove += new System.Windows.Forms.MouseEventHandler(this.videobar_MouseMove);
 			this.videobar.MouseUp += new System.Windows.Forms.MouseEventHandler(this.videobar_MouseUp);
 			// 
-			// toolStripMenuItem1
-			// 
-			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(130, 6);
-			// 
 			// MainForm
 			// 
+			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(834, 511);
@@ -235,6 +274,8 @@
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
 			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.SizeChanged += new System.EventHandler(this.MainForm_SizeChanged);
+			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MainForm_DragDrop);
+			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.MainForm_DragEnter);
 			((System.ComponentModel.ISupportInitialize)(this.vlcControl1)).EndInit();
 			this.contextMenuStrip1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -255,14 +296,18 @@
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.Panel videobar;
 		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video;
-		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video_Filters;
-		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video_Filters_None;
-		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video_Filters_Transform;
-		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video_Filters_Transform_90;
-		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video_Filters_Transform_180;
-		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video_Filters_Transform_270;
-		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video_Filters_Wave;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video_Speed;
+		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video_Speed_02;
+		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video_Speed_05;
+		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video_Speed_08;
+		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video_Speed_10;
+		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video_Speed_15;
+		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video_Speed_20;
+		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video_Speed_50;
+		private System.Windows.Forms.ToolStripMenuItem rightMenu_Video_Tracks;
+		private System.Windows.Forms.ToolStripMenuItem rightMenu_OpenFolder;
+		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
 	}
 }
 

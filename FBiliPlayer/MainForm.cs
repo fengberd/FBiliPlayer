@@ -12,40 +12,37 @@ namespace FBiliPlayer
 {
 	public partial class MainForm : Form
 	{
-		private static string[] FILTER_NONE = new string[0],
-			FILTER_TRANSFORM_90 = new string[]
-			{
-				"--video-filter=transform",
-				"--transform-type=90"
-			}, FILTER_TRANSFORM_180 = new string[]
-			{
-				"--video-filter=transform",
-				"--transform-type=180"
-			}, FILTER_TRANSFORM_270 = new string[]
-			{
-				"--video-filter=transform",
-				"--transform-type=270"
-			}, FILTER_WAVE = new string[]
-			{
-				"--video-filter=wave"
-			};
-
-		private int playIndex = -1, old_width = 0, old_height = 0;
+		private float playSpeed = 1.0f;
+		private int playIndex = -1, toPlayIndex = -1, old_width = 0, old_height = 0;
 		private bool lockTrackbar = false, isFullscreen = false;
 		private long max_length = 0, current_offset = 0, current_length = 0, doubleClick = -1;
 
-		private string[] filter = new string[0];
-
 		private IList<string> playList = new List<string>();
+		private IList<EntryVideoData> toPlay = new List<EntryVideoData>();
 		private IDictionary<int,long[]> segment_table = new Dictionary<int,long[]>();
 
 		public MainForm()
 		{
 			InitializeComponent();
 			OnSizeChanged(null);
+			RefreshRightMenu();
 		}
 
-		private bool PlayNext(int increase = 1)
+		private void PlayNextEntry(int increase = 1)
+		{
+			if(toPlay.Count > (toPlayIndex = toPlayIndex + increase))
+			{
+				EntryVideoData next = toPlay[toPlayIndex];
+				Text = next.Title + " - " + next.Index + "." + next.IndexTitle + " [" + (toPlayIndex + 1) + "/" + toPlay.Count + "]";
+				PlayByIndexFolder(next.IndexPath);
+			}
+			else
+			{
+				Stop();
+			}
+		}
+
+		private bool PlayNextSegment(int increase = 1)
 		{
 			if(playList.Count > (playIndex = playIndex + increase))
 			{
@@ -58,6 +55,70 @@ namespace FBiliPlayer
 			playIndex = -1;
 			vlcControl1.OnStopped();
 			return false;
+		}
+
+		private void PlayByEntryFolder(string path,bool play = false)
+		{
+			path = path.Replace("\\","/");
+			if(path[path.Length - 1] != '/')
+			{
+				path += "/";
+			}
+			if(!Directory.Exists(path) || !File.Exists(path + "entry.json"))
+			{
+				throw new Exception("Path not exists or invalid.");
+			}
+			dynamic json = JSON.Parse(File.ReadAllText(path + "entry.json"));
+			if(!json["is_completed"])
+			{
+				if(MessageBox.Show("The video \"" + json["title"] + "\" may not downloaded correctly,continue?","Warning",MessageBoxButtons.OKCancel,MessageBoxIcon.Warning) != DialogResult.OK)
+				{
+					return;
+				}
+			}
+			int index = 0;
+			string index_title = "";
+			try
+			{
+				dynamic ep = json["ep"];
+				if(ep["index"] is int)
+				{
+					index = ep["index"];
+				}
+				else if(ep["index"] is string)
+				{
+					index = int.Parse(ep["index"]);
+				}
+				index_title = ep["index_title"];
+			}
+			catch { }
+			try
+			{
+				dynamic page_data = json["page_data"];
+				if(page_data["page"] is int)
+				{
+					index = page_data["page"];
+				}
+				else if(page_data["page"] is string)
+				{
+					index = int.Parse(page_data["page"]);
+				}
+				index_title = page_data["part"];
+			}
+			catch { }
+			toPlay.Add(new EntryVideoData()
+			{
+				Path = path,
+				Title = json["title"],
+				Index = index,
+				IndexPath = path + json["type_tag"],
+				IndexTitle = index_title
+			});
+			Console.WriteLine("Added " + json["title"] + " - " + index + "." + index_title + "(" + path + ")");
+			if(play)
+			{
+				PlayNextEntry();
+			}
 		}
 
 		private void PlayByIndexFolder(string path)
@@ -73,9 +134,7 @@ namespace FBiliPlayer
 			}
 			dynamic json = JSON.Parse(File.ReadAllText(path + "index.json"));
 			IList<object> segment_list = json["segment_list"];
-			playList.Clear();
-			segment_table.Clear();
-			vlcControl1.Stop();
+			Stop();
 			for(int i = 0;i < segment_list.Count;i++)
 			{
 				IDictionary<string,object> segment = (IDictionary<string,object>)segment_list[i];
@@ -84,11 +143,18 @@ namespace FBiliPlayer
 					(segment_table.Count == 0 ? 0 : segment_table[segment_table.Count - 1][0]) + (long)segment["duration"],
 					(long)segment["duration"]
 				});
-				playList.Add(path + i + ".mp4");
+				if(File.Exists(path + i + ".mp4"))
+				{
+					playList.Add(path + i + ".mp4");
+				}
+				else if(File.Exists(path + i + ".flv"))
+				{
+					playList.Add(path + i + ".flv");
+				}
 			}
 			max_length = segment_table[segment_table.Count - 1][0];
 			playIndex = -1;
-			PlayNext();
+			PlayNextSegment();
 		}
 
 		private void Seek(long time)
@@ -112,7 +178,7 @@ namespace FBiliPlayer
 					if(i != playIndex || !vlcControl1.IsPlaying)
 					{
 						playIndex = i;
-						PlayNext(0);
+						PlayNextSegment(0);
 					}
 					vlcControl1.Position = time / (float)segment_table[i][1];
 					lockTrackbar = false;
@@ -121,6 +187,14 @@ namespace FBiliPlayer
 			}
 			playIndex = -1;
 			vlcControl1.Stop();
+		}
+
+		private void Stop()
+		{
+			playIndex = -1;
+			playList.Clear();
+			vlcControl1.Stop();
+			Text = "Bilibili Player";
 		}
 
 		private void Pause()
@@ -162,13 +236,22 @@ namespace FBiliPlayer
 		{
 			rightMenu_Pause.Checked = playIndex != -1 && !vlcControl1.IsPlaying;
 			rightMenu_Fullscreen.Checked = isFullscreen;
-			rightMenu_Video_Filters_None.Checked = rightMenu_Video_Filters_Wave.Checked = rightMenu_Video_Filters_Transform_90.Checked =
-				rightMenu_Video_Filters_Transform_180.Checked = rightMenu_Video_Filters_Transform_270.Checked = false;
-			rightMenu_Video_Filters_None.Checked = filter == FILTER_NONE;
-			rightMenu_Video_Filters_Transform_90.Checked = filter == FILTER_TRANSFORM_90;
-			rightMenu_Video_Filters_Transform_180.Checked = filter == FILTER_TRANSFORM_180;
-			rightMenu_Video_Filters_Transform_270.Checked = filter == FILTER_TRANSFORM_270;
-			rightMenu_Video_Filters_Wave.Checked = filter == FILTER_WAVE;
+			foreach(ToolStripMenuItem item in rightMenu_Video_Speed.DropDownItems)
+			{
+				item.Checked = float.Parse((string)item.Tag) == playSpeed;
+			}
+			rightMenu_Video_Tracks.DropDownItems.Clear();
+			foreach(TrackDescription track in vlcControl1.Video.Tracks.All)
+			{
+				ToolStripItem item = rightMenu_Video_Tracks.DropDownItems.Add(track.Name);
+				item.Tag = track.ID;
+				item.Click += rightMenu_Video_Track_Item_Click;
+				if(track.ID == vlcControl1.Video.Tracks.Current.ID)
+				{
+					((ToolStripMenuItem)item).Checked = true;
+				}
+			}
+			rightMenu_Video_Tracks.Enabled = rightMenu_Video_Tracks.DropDownItems.Count != 0;
 		}
 
 		private void ReInitVlc(string[] args = null)
@@ -177,7 +260,7 @@ namespace FBiliPlayer
 			{
 				List<string> tmpargs = new List<string>();
 				tmpargs.Add("--quiet");
-				tmpargs.AddRange(filter);
+				tmpargs.Add("--rate=" + playSpeed);
 				args = tmpargs.ToArray();
 			}
 			bool playing = false;
@@ -216,26 +299,25 @@ namespace FBiliPlayer
 				}
 				vlcControl1.Position = play_pos;
 			}
+			RefreshRightMenu();
 		}
 
 		private void timer1_Tick(object sender,EventArgs e)
 		{
 			if(vlcControl1.State == Vlc.DotNet.Core.Interops.Signatures.MediaStates.Ended && playIndex != -1)
 			{
-				PlayNext();
+				PlayNextSegment();
 			}
 		}
 
 		private void MainForm_Load(object sender,EventArgs e)
 		{
-			PlayByIndexFolder(@"R:\30216\lua.mp4.bapi.9");
+
 		}
 
 		private void MainForm_FormClosing(object sender,FormClosingEventArgs e)
 		{
-			playIndex = -1;
-			playList.Clear();
-			vlcControl1.Stop();
+			Stop();
 		}
 
 		private void MainForm_SizeChanged(object sender,EventArgs e)
@@ -362,16 +444,67 @@ namespace FBiliPlayer
 			}
 		}
 
+		private void rightMenu_OpenFolder_Click(object sender,EventArgs e)
+		{
+			FolderBrowserDialog dialog = new FolderBrowserDialog();
+			dialog.Description = "Open any folder in tv.danmaku.bilibili/download/";
+			dialog.RootFolder = Environment.SpecialFolder.Desktop;
+			if(dialog.ShowDialog() == DialogResult.OK)
+			{
+				if(File.Exists(Path.Combine(dialog.SelectedPath,"entry.json")))
+				{
+					PlayByEntryFolder(dialog.SelectedPath,true);
+				}
+				else if(File.Exists(Path.Combine(dialog.SelectedPath,"index.json")))
+				{
+					PlayByIndexFolder(dialog.SelectedPath);
+				}
+				else
+				{
+
+				}
+			}
+		}
+
 		private void rightMenu_Pause_Click(object sender,EventArgs e)
 		{
 			Pause();
 		}
 
+		private void MainForm_DragDrop(object sender,DragEventArgs e)
+		{
+			string[] files = (string[])e.Data.GetData(DataFormats.FileDrop,false);
+			foreach(string file in files)
+			{
+				if(File.Exists(Path.Combine(file,"entry.json")))
+				{
+					PlayByEntryFolder(file);
+				}
+				else if(File.Exists(Path.Combine(file,"index.json")))
+				{
+					PlayByIndexFolder(file);
+				}
+				else
+				{
+				}
+			}
+		}
+
+		private void MainForm_DragEnter(object sender,DragEventArgs e)
+		{
+			if(e.Data.GetDataPresent(DataFormats.FileDrop))
+			{
+				e.Effect = DragDropEffects.All;
+			}
+			else
+			{
+				e.Effect = DragDropEffects.None;
+			}
+		}
+
 		private void rightMenu_Stop_Click(object sender,EventArgs e)
 		{
-			playIndex = -1;
-			playList.Clear();
-			vlcControl1.Stop();
+			Stop();
 		}
 
 		private void rightMenu_Fullscreen_Click(object sender,EventArgs e)
@@ -379,39 +512,28 @@ namespace FBiliPlayer
 			Fullscreen();
 		}
 
-		private void rightMenu_Video_Filters_None_Click(object sender,EventArgs e)
+		private void rightMenu_Video_Speed_Item_Click(object sender,EventArgs e)
 		{
-			filter = FILTER_NONE;
+			playSpeed = float.Parse((string)((ToolStripMenuItem)sender).Tag);
 			ReInitVlc();
 		}
 
-		private void rightMenu_Video_Filters_Transform_90_Click(object sender,EventArgs e)
+		private void rightMenu_Video_Track_Item_Click(object sender,EventArgs e)
 		{
-			filter = FILTER_TRANSFORM_90;
-			ReInitVlc();
-		}
-
-		private void rightMenu_Video_Filters_Transform_180_Click(object sender,EventArgs e)
-		{
-			filter = FILTER_TRANSFORM_180;
-			ReInitVlc();
-		}
-
-		private void rightMenu_Video_Filters_Transform_270_Click(object sender,EventArgs e)
-		{
-			filter = FILTER_TRANSFORM_270;
-			ReInitVlc();
-		}
-
-		private void rightMenu_Video_Filters_Wave_Click(object sender,EventArgs e)
-		{
-			filter = FILTER_WAVE;
-			ReInitVlc();
+			foreach(TrackDescription track in vlcControl1.Video.Tracks.All)
+			{
+				if((int)((ToolStripItem)sender).Tag == track.ID)
+				{
+					vlcControl1.Video.Tracks.Current = track;
+					break;
+				}
+			}
+			RefreshRightMenu();
 		}
 
 		private void rightMenu_DEV_Click(object sender,EventArgs e)
 		{
-			vlcControl1.Position = 0.99f;
+			PlayNextEntry();
 		}
 
 		protected override void WndProc(ref Message m)
@@ -471,27 +593,48 @@ namespace FBiliPlayer
 
 		protected override bool ProcessCmdKey(ref Message msg,Keys keyData)
 		{
-			if((msg.Msg == WindowsMessages.WM_KEYDOWN) || (msg.Msg == WindowsMessages.WM_SYSKEYDOWN))
+			if(msg.Msg == WindowsMessages.WM_KEYDOWN || msg.Msg == WindowsMessages.WM_SYSKEYDOWN)
 			{
 				Console.WriteLine(keyData);
 				switch(keyData)
 				{
-				case Keys.Down:
-					break;
 				case Keys.Up:
+					vlcControl1.Audio.Volume = Math.Min(vlcControl1.Audio.Volume + 5,150);
+					Console.WriteLine("Volume:" + vlcControl1.Audio.Volume);
+					break;
+				case Keys.Down:
+					vlcControl1.Audio.Volume = Math.Max(vlcControl1.Audio.Volume - 5,0);
+					Console.WriteLine("Volume:" + vlcControl1.Audio.Volume);
+					break;
+				case Keys.Control | Keys.Up:
+					vlcControl1.Audio.Volume = Math.Min(vlcControl1.Audio.Volume + 1,150);
+					Console.WriteLine("Volume:" + vlcControl1.Audio.Volume);
+					break;
+				case Keys.Control | Keys.Down:
+					vlcControl1.Audio.Volume = Math.Max(vlcControl1.Audio.Volume - 1,0);
+					Console.WriteLine("Volume:" + vlcControl1.Audio.Volume);
 					break;
 				case Keys.Left:
 					Seek(current_offset + (long)(vlcControl1.Position * current_length) - 10000);
+					Console.WriteLine("-10s");
 					break;
 				case Keys.Right:
 					Seek(current_offset + (long)(vlcControl1.Position * current_length) + 10000);
+					Console.WriteLine("+10s");
+					break;
+				case Keys.Control | Keys.Left:
+					Seek(current_offset + (long)(vlcControl1.Position * current_length) - 1000);
+					Console.WriteLine("-1s");
+					break;
+				case Keys.Control | Keys.Right:
+					Seek(current_offset + (long)(vlcControl1.Position * current_length) + 1000);
+					Console.WriteLine("+1s");
 					break;
 				case Keys.Space:
 					Pause();
 					break;
 				}
 			}
-
 			return base.ProcessCmdKey(ref msg,keyData);
 		}
 	}
